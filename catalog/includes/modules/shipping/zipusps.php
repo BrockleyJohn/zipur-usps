@@ -240,7 +240,7 @@
             global $shipping_num_boxes;
 
             $xmlRequest = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-            $xmlRequest .= '<IntlRateV2Request USERID="' . MODULE_SHIPPING_ZIP_USPS_USER_ID . '" PASSWORD="' . MODULE_SHIPPING_ZIP_USPS_PASSWORD . '">' . PHP_EOL;
+            $xmlRequest .= '<IntlRateV2Request USERID="' . MODULE_SHIPPING_ZIP_USPS_USER_ID . (! empty($this->base_constant('PASSWORD')) ? '" PASSWORD="' . MODULE_SHIPPING_ZIP_USPS_PASSWORD : '') . '">' . PHP_EOL;
             $xmlRequest .= '<Revision>2</Revision>' . PHP_EOL;
 
             //PACKAGE START
@@ -316,7 +316,7 @@
             global $shipping_num_boxes;
 
             $xmlRequest = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-            $xmlRequest .= '<RateV4Request USERID="' . MODULE_SHIPPING_ZIP_USPS_USER_ID . '" PASSWORD="' . MODULE_SHIPPING_ZIP_USPS_PASSWORD . '">' . PHP_EOL;
+            $xmlRequest .= '<RateV4Request USERID="' . MODULE_SHIPPING_ZIP_USPS_USER_ID . (! empty($this->base_constant('PASSWORD')) ? '" PASSWORD="' . MODULE_SHIPPING_ZIP_USPS_PASSWORD : '') . '">' . PHP_EOL;
             $xmlRequest .= '<Revision>2</Revision>' . PHP_EOL;
 
             //PACKAGE START
@@ -378,7 +378,7 @@
          */
         private function callUSPSAPI( $xmlRequest, $APIV ) {
 
-            $debug = 0;
+            $debug = ('Yes' === $this->base_constant('SCREEN_API'));
 
             if (!empty($debug)) {
                 $xml = simplexml_load_string($xmlRequest, "SimpleXMLElement", LIBXML_NOCDATA);
@@ -1114,6 +1114,12 @@
                     'title'    => 'Show USPS errors (<span class="text-danger">make sure to turn this off once done testing</span>)',
                     'value'    => 'Yes',
                     'desc'     => 'Do you want to show USPS errors on screen?',
+                    'set_func' => "$select_set_func(['Yes', 'No'], ",
+                ],
+                $this->config_key_base . 'SCREEN_API'   => [
+                    'title'    => 'Output API detail (<span class="text-danger">only turn on for debugging</span>)',
+                    'value'    => 'No',
+                    'desc'     => 'Write details of API calls to screen? Useful if you\'re not getting anything output.',
                     'set_func' => "$select_set_func(['Yes', 'No'], ",
                 ],
                 $this->config_key_base . 'TURNAROUNDTIME'  => [
