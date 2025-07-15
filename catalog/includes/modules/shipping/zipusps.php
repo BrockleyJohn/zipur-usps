@@ -660,7 +660,19 @@
                         ];
                     }
                 }
-            }
+            } elseif ( ! empty( $result['Number'] ) ) {
+
+                // errors at this level are fatal!
+                $error_msg = "Error from API: " . $result['Number'] . ' ' . $result['Description'] . ' ' . $result['Source'];
+
+                if ( MODULE_SHIPPING_ZIP_USPS_EMAIL_ERRORS == 'Yes' ) {
+                    error_log( $error_msg . " experienced by customer with id " . $_SESSION['customer_id'] . " on " . date( 'Y-m-d H:i:s' ), 1, STORE_OWNER_EMAIL_ADDRESS );
+                }
+                if ( MODULE_SHIPPING_ZIP_USPS_SCREEN_ERRORS == 'Yes' ) {
+                    $this->debugToScreen( $error_msg, '' );
+                }
+
+            } 
         }
 
         /**
